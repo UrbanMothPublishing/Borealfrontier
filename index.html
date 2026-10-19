@@ -308,9 +308,12 @@
           <h2 id="contact-title">Contact Us</h2>
           <p>Drop us a line! We'd love to hear from you.</p>
         </div>
-        <form class="contact-form" name="contact" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company">
-          <input type="hidden" name="form-name" value="contact">
-          <p hidden><label>Leave this empty <input name="company"></label></p>
+        <form class="contact-form" name="contact" method="POST" action="https://api.web3forms.com/submit">
+          <input type="hidden" name="access_key" value="5f5b4af3-1392-43d2-bb77-ffd7bb30c034">
+          <input type="hidden" name="subject" value="New message from borealfrontier.com">
+          <input type="hidden" name="from_name" value="Boreal Frontier website">
+          <input type="hidden" name="redirect" value="https://borealfrontier.com/thanks.html">
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
           <label>Name <input type="text" name="name" autocomplete="name" required></label>
           <label>Email <input type="email" name="email" autocomplete="email" required></label>
           <label>Message <textarea name="message" required></textarea></label>
