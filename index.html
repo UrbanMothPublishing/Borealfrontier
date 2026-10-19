@@ -308,14 +308,15 @@
           <h2 id="contact-title">Contact Us</h2>
           <p>Drop us a line! We'd love to hear from you.</p>
         </div>
-        <!-- TODO: point action at a form service (e.g. Formspree / Netlify Forms) once hosting is chosen. -->
-        <form class="contact-form" action="mailto:hello@borealfrontier.com" method="post" enctype="text/plain">
+        <form class="contact-form" name="contact" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="company">
+          <input type="hidden" name="form-name" value="contact">
+          <p hidden><label>Leave this empty <input name="company"></label></p>
           <label>Name <input type="text" name="name" autocomplete="name" required></label>
           <label>Email <input type="email" name="email" autocomplete="email" required></label>
           <label>Message <textarea name="message" required></textarea></label>
           <button class="btn btn-primary" type="submit">Send message</button>
         </form>
-        <p class="contact-alt">Or email us at <a href="mailto:hello@borealfrontier.com">hello@borealfrontier.com</a></p>
+        <p class="contact-alt">We read every message and will get back to you soon.</p>
       </div>
     </section>
   </main>
