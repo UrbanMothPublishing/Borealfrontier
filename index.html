@@ -150,6 +150,13 @@
     .bubble.coach { background: rgba(244,241,234,.07); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
     .bubble.me { margin-left: auto; background: var(--snow); color: var(--night); border-bottom-right-radius: 4px; }
 
+    .work-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .project { display: flex; flex-direction: column; border: 1px solid var(--line); border-top: 3px solid var(--maple); border-radius: 18px; padding: 30px 28px; background: rgba(255,255,255,.02); }
+    .project .tag { align-self: flex-start; }
+    .project h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin: 0 0 10px; }
+    .project p { color: var(--mist); margin: 0 0 6px; font-size: 15.5px; }
+    .project ul { margin: 16px 0 26px; gap: 10px; font-size: 15px; }
+    .project-links { margin-top: auto; }
     .about { position: relative; overflow: hidden; background: var(--white); color: #1a1a1a; }
     .about .leaf-mark { position: absolute; right: -60px; top: 50%; width: 420px; height: 420px; transform: translateY(-50%) rotate(-12deg); opacity: .07; pointer-events: none; }
     .about .wrap { position: relative; }
@@ -182,7 +189,7 @@
 
     @media (max-width: 860px) {
       .nav { display: none; }
-      .cards, .product-grid, .about-grid { grid-template-columns: 1fr; }
+      .cards, .product-grid, .about-grid, .work-grid { grid-template-columns: 1fr; }
       .product-grid, .about-grid { gap: 40px; }
       section { padding: 80px 0; }
       .mock { aspect-ratio: auto; }
@@ -209,7 +216,7 @@
       <a class="brand" href="#top"><svg aria-hidden="true"><use href="#maple"/></svg>Boreal Frontier</a>
       <nav class="nav" aria-label="Main">
         <a href="#what-we-do">What we do</a>
-        <a href="#coach">Manifestation Coach</a>
+        <a href="#work">Our work</a>
         <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -225,7 +232,7 @@
         <h1 id="hero-title"><span class="ca">Canadian</span> Innovation in the Digital Frontier</h1>
         <p class="lede">A Canadian digital studio building thoughtful, AI-guided products that help people grow, with the calm and clarity of the northern woods.</p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#coach">Explore our work</a>
+          <a class="btn btn-primary" href="#work">Explore our work</a>
           <a class="btn btn-ghost" href="#contact">Get in touch</a>
         </div>
       </div>
@@ -261,23 +268,50 @@
       </div>
     </section>
 
-    <section class="product" id="coach" aria-labelledby="coach-title">
-      <div class="wrap product-grid">
-        <div>
-          <span class="tag">Now in early access</span>
-          <h2 id="coach-title">Manifestation Coach</h2>
-          <p>A guided coaching experience designed to help you turn what you want into focused action. Begin from wherever you are.</p>
-          <ul>
-            <li>Choose a coaching lens: scientific, spiritual or practical.</li>
-            <li>Remembers your goals, so every conversation picks up where you left off.</li>
-            <li>Daily practices and saved affirmations to keep you moving.</li>
-          </ul>
-          <a class="btn btn-primary" href="#contact">Request early access</a>
+    <section class="product" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="rule"></div>
+          <h2 id="work-title">Our work</h2>
+          <p>A few of the things we're building right now.</p>
         </div>
-        <div class="mock" aria-hidden="true">
-          <div class="bubble coach">Welcome. What would you like to bring into your life right now?</div>
-          <div class="bubble me">I want to finally launch my own business.</div>
-          <div class="bubble coach">Let's make that real. Picture the day it's open. What does that version of you do first each morning?</div>
+        <div class="work-grid">
+          <article class="project">
+            <span class="tag">For local businesses</span>
+            <h3>Websites for local trades</h3>
+            <p>Fast, mobile-first one-page sites for plumbers and other trades: your services, your reviews and one-tap calling.</p>
+            <ul>
+              <li>Flat $300, delivered in 48 hours</li>
+              <li>One round of revisions included</li>
+            </ul>
+            <div class="project-links">
+              <a class="btn btn-primary" href="https://plumber-demo-landing-page-boreal-frontier1.vercel.app" target="_blank" rel="noopener">See a sample site</a>
+            </div>
+          </article>
+          <article class="project">
+            <span class="tag">In testing</span>
+            <h3>Spark to Stage</h3>
+            <p>An AI coach that helps you find and shape a TEDx talk idea, from first spark to a talk you're ready to pitch.</p>
+            <ul>
+              <li>Turns your experiences into a clear idea worth sharing</li>
+              <li>Guides you step by step toward a strong application</li>
+            </ul>
+            <div class="project-links">
+              <a class="btn btn-primary" href="https://spark-to-stage.base44.app" target="_blank" rel="noopener">Try Spark to Stage</a>
+            </div>
+          </article>
+          <article class="project">
+            <span class="tag">Early access</span>
+            <h3>Manifestation Coach</h3>
+            <p>A guided coaching experience that helps you turn what you want into focused action. Begin from wherever you are.</p>
+            <ul>
+              <li>Choose a scientific, spiritual or practical lens</li>
+              <li>Remembers your goals between conversations</li>
+            </ul>
+            <div class="project-links">
+              <a class="btn btn-ghost" href="#contact">Request early access</a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
