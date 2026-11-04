@@ -157,6 +157,7 @@
     .project p { color: var(--mist); margin: 0 0 6px; font-size: 15.5px; }
     .project ul { margin: 16px 0 26px; gap: 10px; font-size: 15px; }
     .project-links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 12px; }
+    .work-grid .project:last-child:nth-child(odd) { grid-column: 1 / -1; }
     .about { position: relative; overflow: hidden; background: var(--white); color: #1a1a1a; }
     .about .leaf-mark { position: absolute; right: -60px; top: 50%; width: 420px; height: 420px; transform: translateY(-50%) rotate(-12deg); opacity: .07; pointer-events: none; }
     .about .wrap { position: relative; }
@@ -278,15 +279,26 @@
         <div class="work-grid">
           <article class="project">
             <span class="tag">For local businesses</span>
-            <h3>Websites for local trades</h3>
-            <p>Fast, mobile-first one-page sites for plumbers, electricians and other trades: your services, your reviews and one-tap calling.</p>
+            <h3>Websites for plumbers</h3>
+            <p>Fast, mobile-first one-page sites for plumbers: your services, your reviews and one-tap calling, so customers searching "plumber near me" call you first.</p>
             <ul>
               <li>Flat $300, delivered in 48 hours</li>
               <li>One round of revisions included</li>
             </ul>
             <div class="project-links">
-              <a class="btn btn-primary" href="https://plumber-demo-landing-page-boreal-frontier1.vercel.app" target="_blank" rel="noopener">Plumber sample</a>
-              <a class="btn btn-ghost" href="https://electrician-demo-landing-page-boreal-frontier1.vercel.app/" target="_blank" rel="noopener">Electrician sample</a>
+              <a class="btn btn-primary" href="https://plumber-demo-landing-page-boreal-frontier1.vercel.app" target="_blank" rel="noopener">See the plumber sample</a>
+            </div>
+          </article>
+          <article class="project">
+            <span class="tag">For local businesses</span>
+            <h3>Websites for electricians</h3>
+            <p>Clean, mobile-first one-page sites for electricians: your services, your reviews and one-tap calling, built to turn searches into booked jobs.</p>
+            <ul>
+              <li>Flat $300, delivered in 48 hours</li>
+              <li>One round of revisions included</li>
+            </ul>
+            <div class="project-links">
+              <a class="btn btn-primary" href="https://electrician-demo-landing-page-boreal-frontier1.vercel.app/" target="_blank" rel="noopener">See the electrician sample</a>
             </div>
           </article>
           <article class="project">
