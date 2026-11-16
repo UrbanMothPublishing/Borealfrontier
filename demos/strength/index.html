@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strength creator app demo · Boreal Frontier</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#e9e6e1;color:#f4f1ec;display:flex;flex-direction:column;align-items:center;padding:20px 12px 40px;min-height:100vh}
+  .note{color:#4a4640;font-size:13px;max-width:420px;text-align:center;margin-bottom:14px;line-height:1.45}
+  .note b{color:#1c1a17}
+  #phone{width:390px;max-width:100%;height:800px;background:#0b0b0b;border-radius:44px;border:10px solid #1c1a17;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  #screen{flex:1;overflow-y:auto;padding:22px 18px 18px}
+  #tabs{display:flex;border-top:1px solid #2a2826;background:#181716;padding:8px 4px 14px}
+  #tabs button{flex:1;background:none;border:none;color:#8a857d;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0}
+  #tabs button .i{font-size:19px}
+  #tabs button.on{color:#e9e5dd}
+  h1{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+  h2{font-size:20px;font-weight:700;margin-bottom:12px}
+  h3{font-size:16px;font-weight:700}
+  .muted{color:#9b968e;font-size:14px;line-height:1.45}
+  .small{font-size:12px;color:#9b968e}
+  .btn{display:block;width:100%;background:#e9e5dd;color:#141312;font-weight:800;font-size:17px;border:none;border-radius:16px;padding:17px;cursor:pointer;margin-top:14px}
+  .btn.ghost{background:#24221f;color:#f4f1ec;font-weight:600}
+  .card{background:#1f1d1b;border-radius:18px;padding:16px;margin-bottom:12px}
+  .hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#2e2e2e,#1f1d1b 70%);margin-bottom:14px}
+  .thumb{border-radius:14px;background:linear-gradient(135deg,#3a3a3a,#161616);display:flex;align-items:center;justify-content:center;color:#d8cbbd;font-size:13px;flex-shrink:0}
+  .row{display:flex;gap:12px;align-items:center}
+  .pill{display:inline-block;background:#2b2825;color:#cfc9c0;border-radius:99px;padding:5px 11px;font-size:12px;margin:0 6px 6px 0;cursor:pointer;border:none}
+  .pill.on{background:#e9e5dd;color:#141312;font-weight:700}
+  .opt{display:block;width:100%;text-align:left;background:#1f1d1b;border:2px solid #2b2825;color:#f4f1ec;border-radius:16px;padding:17px;font-size:16px;margin-bottom:10px;cursor:pointer}
+  .opt:hover{border-color:#e9e5dd}
+  .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e9e5dd,#7a7a7a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#141312;flex-shrink:0}
+  .ex{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #2b2825;font-size:15px}
+  .ex:last-child{border:none}
+  .bubble{max-width:80%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.4;margin-bottom:8px}
+  .me{background:#e9e5dd;color:#141312;margin-left:auto;border-bottom-right-radius:5px}
+  .them{background:#24221f;border-bottom-left-radius:5px}
+  .big{font-size:52px;font-weight:800;color:#e9e5dd;line-height:1}
+  .week{display:flex;justify-content:space-between;margin-top:12px}
+  .day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#9b968e}
+  .dot{width:30px;height:30px;border-radius:50%;background:#2b2825;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .dot.done{background:#e9e5dd;color:#141312;font-weight:800}
+  .badge{background:#24221f;border-radius:16px;padding:14px 8px;text-align:center;font-size:12px;color:#cfc9c0}
+  .badge .e{font-size:26px;display:block;margin-bottom:6px}
+  .badge.locked{opacity:.35}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .back{background:none;border:none;color:#e9e5dd;font-size:15px;cursor:pointer;margin-bottom:14px;padding:0}
+  .progress{height:5px;background:#2b2825;border-radius:9px;overflow:hidden;margin:8px 0}
+  .progress div{height:100%;background:#e9e5dd}
+  .timer{font-size:72px;font-weight:800;text-align:center;color:#e9e5dd;margin:16px 0}
+  input.msg{flex:1;background:#24221f;border:none;border-radius:99px;padding:13px 16px;color:#f4f1ec;font-size:15px}
+  .send{background:#e9e5dd;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer}
+  .center{text-align:center}
+  .lock{font-size:12px;background:#2b2825;color:#cfc9c0;padding:3px 8px;border-radius:8px}
+</style>
+</head>
+<body>
+<p class="note" style="margin-bottom:6px"><a href="/" style="color:#1c1a17;font-weight:700;text-decoration:none">🍁 Boreal Frontier</a> · <a href="/#contact" style="color:#4a4640">Get your own app</a></p>
+<p class="note"><b>Concept: a subscription strength app built from a creator's Instagram videos.</b> Type a creator name below to preview it. Workouts, messages and prices are made-up samples; the real app would be built from the creator's own Reels.</p>
+<input id="nm" placeholder="Type a creator name, e.g. your first name" oninput="setName(this.value)" style="width:390px;max-width:100%;padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px;margin-bottom:14px">
+<div id="phone">
+  <div id="screen"></div>
+  <nav id="tabs"></nav>
+</div>
+
+<script>
+const CREATOR = { name: "Your Name", handle: "@yourhandle", initial: "Y" };
+function setName(v){ v=v.trim(); CREATOR.name=v||"Your Name"; CREATOR.initial=(v[0]||"Y").toUpperCase(); render(); }
+function planName(){ const d=S.answers[2]||"3 days"; return d.startsWith("2")?"Strength: 2 Day Full Body":d.startsWith("4")?"Strength: 4 Day Upper/Lower":"Strength: 3 Day Push/Pull/Legs"; }
+
+const S = {
+  view: "welcome", tab: "today", photo: null, q: 0, answers: {}, subscribed: false,
+  streak: 4, doneToday: false, program: null, filter: "All",
+  player: { ex: 0, set: 1, resting: false, t: 0 },
+  messages: [
+    { me: false, text: "Welcome in. Message me any time: form checks, programming questions, whatever you need." },
+    { me: true, text: "Hey __NAME__, my squat keeps stalling at 315. Should I deload or keep grinding?" },
+    { me: false, text: "Take 10% off for a week and nail your bracing. Film a top set from the side next session and send it here. I'll check your depth and bar path." }
+  ]
+};
+let timerId = null;
+
+const QUIZ = [
+  { q: "What's your main goal?", opts: ["Get stronger", "Build muscle", "Start lifting the right way", "Strongman"] },
+  { q: "Where do you train?", opts: ["Commercial gym", "Home gym with a barbell", "Strongman / garage gym"] },
+  { q: "How many days a week can you train?", opts: ["2 days", "3 days", "4 days"] }
+];
+
+const TODAY = {
+  title: "Legs: Squat Focus", label: "Week 2 · Day 1", mins: 55,
+  exercises: [
+    { name: "Back Squat", sets: 5, reps: "5 reps" },
+    { name: "Romanian Deadlift", sets: 3, reps: "8 reps" },
+    { name: "Bulgarian Split Squat", sets: 3, reps: "10 each leg" },
+    { name: "Farmer's Carry", sets: 4, reps: "40 metres" }
+  ]
+};
+
+const PROGRAMS = [
+  { name: "Strength: 3 Day Push/Pull/Legs", weeks: 12, days: 3, level: "Intermediate", desc: "Strength, muscle and capability on three days a week.", progress: 0.12 },
+  { name: "The Foundation", weeks: 8, days: 3, level: "Beginner", desc: "Where to start if you're new to lifting: the main lifts, done right.", progress: 0 },
+  { name: "Strength: 4 Day Upper/Lower", weeks: 12, days: 4, level: "Intermediate", desc: "More volume for lifters who can train four days.", progress: 0 },
+  { name: "Strength: 2 Day Full Body", weeks: 12, days: 2, level: "All levels", desc: "Real progress on a busy schedule.", progress: 0 },
+  { name: "100 Day Challenge", weeks: 15, days: 7, level: "Free for everyone", desc: "A free 100-day challenge, with daily check-ins inside the app.", progress: 0 }
+];
+
+const VIDEOS = [
+  { name: "The program behind my best total", part: "Mindset", eq: "Programming", min: 4 },
+  { name: "Squat: bracing and depth", part: "Squat", eq: "Barbell", min: 2 },
+  { name: "Deadlift setup", part: "Deadlift", eq: "Barbell", min: 2 },
+  { name: "Bench press: build a stable arch", part: "Press", eq: "Barbell", min: 2 },
+  { name: "Log press technique", part: "Strongman", eq: "Log", min: 3 },
+  { name: "Atlas stone basics", part: "Strongman", eq: "Stone", min: 3 },
+  { name: "My Mission", part: "Mindset", eq: "Story", min: 2 },
+  { name: "Yoke walk for beginners", part: "Strongman", eq: "Yoke", min: 2 }
+];
+const FILTERS = ["All", "Squat", "Deadlift", "Press", "Strongman", "Mindset"];
+
+const $ = id => document.getElementById(id);
+function go(patch) { Object.assign(S, patch); render(); }
+
+function render() {
+  const sc = $("screen"), tabs = $("tabs");
+  const inApp = S.view === "app";
+  tabs.style.display = inApp ? "flex" : "none";
+  sc.innerHTML = VIEWS[S.view]().split("__NAME__").join(CREATOR.name);
+  sc.scrollTop = 0;
+  if (inApp) {
+    const t = [["today","🏠","Today"],["programs","📋","Programs"],["library","▶️","Library"],["coach","💬","Coach"],["progress","📈","Progress"]];
+    tabs.innerHTML = t.map(([k,i,l]) => `<button class="${S.tab===k?'on':''}" onclick="go({tab:'${k}',program:null})"><span class="i">${i}</span>${l}</button>`).join("");
+  }
+  if (S.view === "app" && S.tab === "coach") {
+    const box = $("chat"); if (box) box.scrollTop = box.scrollHeight;
+  }
+}
+
+const VIEWS = {
+  welcome: () => `
+    <div style="height:100%;display:flex;flex-direction:column;justify-content:space-between">
+      <div>
+        ${S.photo
+          ? `<div style="height:340px;border-radius:22px;margin-bottom:22px;background:url('${S.photo}') center/cover;position:relative">
+               <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(transparent 55%,rgba(20,19,18,.85))"></div>
+               <label class="pill" style="position:absolute;top:12px;right:12px;background:rgba(20,19,18,.7)">Change photo<input type="file" accept="image/*" onchange="addPhoto(this)" hidden></label>
+             </div>`
+          : `<label class="thumb" style="height:340px;font-size:15px;margin-bottom:22px;flex-direction:column;gap:8px;cursor:pointer;border:2px dashed #555">
+               <span style="font-size:40px">📷</span><b>Tap to add ${CREATOR.name}'s photo</b><span class="small">Choose an image from your computer</span>
+               <input type="file" accept="image/*" onchange="addPhoto(this)" hidden>
+             </label>`}
+        <p class="small" style="margin-bottom:6px">${CREATOR.handle}</p>
+        <h1>Train with ${CREATOR.name}.</h1>
+        <p class="muted" style="margin-top:10px">Strength programs built from my training videos. Your first workout is free.</p>
+      </div>
+      <div><button class="btn" onclick="go({view:'quiz',q:0})">Start my free workout</button>
+      <p class="small center" style="margin-top:12px">Already a member? Log in</p></div>
+    </div>`,
+
+  quiz: () => {
+    const Q = QUIZ[S.q];
+    return `<button class="back" onclick="${S.q? `go({q:${S.q-1}})` : `go({view:'welcome'})`}">← Back</button>
+      <div class="progress"><div style="width:${(S.q+1)/QUIZ.length*100}%"></div></div>
+      <p class="small" style="margin:6px 0 18px">Question ${S.q+1} of ${QUIZ.length}</p>
+      <h1 style="margin-bottom:22px">${Q.q}</h1>
+      ${Q.opts.map(o => `<button class="opt" onclick="answer('${o}')">${o}</button>`).join("")}`;
+  },
+
+  plan: () => `
+    <p class="small" style="margin-bottom:8px">Built for you</p>
+    <h1>Your plan is ready.</h1>
+    <div class="hero" style="margin-top:20px">
+      <p class="small">PROGRAM</p>
+      <h2 style="margin:4px 0 6px">${planName()}</h2>
+      <p class="muted">12 weeks · ${S.answers[2] || "3 days"} a week · ${S.answers[1] || "Commercial gym"}</p>
+    </div>
+    <div class="card"><p class="muted">__NAME__ picked this based on your goal: <b style="color:#f4f1ec">${S.answers[0] || "Get stronger"}</b>. You can switch programs any time.</p></div>
+    <button class="btn" onclick="go({view:'app',tab:'today'})">Let's go</button>`,
+
+  app: () => TABS[S.tab](),
+
+  player: () => {
+    const p = S.player, ex = TODAY.exercises[p.ex], next = TODAY.exercises[p.ex+1];
+    const pct = (p.ex / TODAY.exercises.length) * 100;
+    if (p.resting) return `
+      <button class="back" onclick="quitPlayer()">✕ End workout</button>
+      <p class="small center" style="margin-top:40px">REST</p>
+      <div class="timer" id="t">${p.t}</div>
+      <p class="muted center">Next: ${p.set <= ex.sets ? `${ex.name}, set ${p.set} of ${ex.sets}` : (next ? next.name : "Finish")}</p>
+      <button class="btn ghost" onclick="skipRest()">Skip rest</button>`;
+    return `
+      <button class="back" onclick="quitPlayer()">✕ End workout</button>
+      <div class="progress"><div style="width:${pct}%"></div></div>
+      <div class="thumb" style="height:250px;margin:14px 0 18px;flex-direction:column;gap:6px"><span style="font-size:42px">▶</span>__NAME__ demos: ${ex.name}</div>
+      <p class="small">Exercise ${p.ex+1} of ${TODAY.exercises.length}</p>
+      <h1 style="margin:4px 0 6px">${ex.name}</h1>
+      <p style="font-size:22px;font-weight:700;color:#e9e5dd">Set ${p.set} of ${ex.sets} · ${ex.reps}</p>
+      <button class="btn" style="padding:22px;font-size:19px" onclick="doneSet()">Done ✓</button>
+      ${next ? `<p class="small center" style="margin-top:14px">Up next: ${next.name}</p>` : ""}`;
+  },
+
+  done: () => `
+    <div class="center" style="padding-top:60px">
+      <div style="font-size:64px">🔥</div>
+      <h1 style="margin:14px 0 8px">Workout done.</h1>
+      <p class="muted">That's ${S.streak} days in a row. __NAME__ would be proud.</p>
+      <div class="card" style="margin-top:24px;text-align:left">
+        <div class="row">${av()}
+        <p class="muted" style="font-size:14px">"Great first session. Next one is upper body: see you Wednesday." <br><span class="small">__NAME__</span></p></div>
+      </div>
+      <button class="btn" onclick="go({view: S.subscribed ? 'app' : 'paywall', tab:'today'})">Continue</button>
+    </div>`,
+
+  paywall: () => `
+    <p class="small" style="margin-bottom:8px">You finished your free workout 💪</p>
+    <h1>Keep training with __NAME__.</h1>
+    <div class="card" style="margin-top:20px">
+      ${["All 4 programs and every workout video","Your plan, updated as you get stronger","Message __NAME__ directly for advice","Track your streaks and progress"].map(t=>`<p style="padding:7px 0;font-size:15px">✓ ${t}</p>`).join("")}
+    </div>
+    <div class="hero center" style="border:2px solid #e9e5dd">
+      <p style="font-size:30px;font-weight:800">$19.99<span class="muted" style="font-size:15px"> / month</span></p>
+      <p class="muted">7 days free, cancel anytime</p>
+    </div>
+    <button class="btn" onclick="go({subscribed:true,view:'app',tab:'today'})">Start my free week</button>
+    <p class="small center" style="margin-top:12px;cursor:pointer" onclick="go({view:'app',tab:'today'})">Not now</p>`
+};
+
+const TABS = {
+  today: () => `
+    <div class="row" style="margin-bottom:20px">${av()}
+      <div><p class="small">Good morning</p><h3>Day ${S.streak} streak 🔥</h3></div></div>
+    <div class="hero">
+      <p class="small">${TODAY.label} · ${planName()}</p>
+      <h2 style="margin:6px 0 4px">${TODAY.title}</h2>
+      <p class="muted">${TODAY.mins} min · ${TODAY.exercises.length} exercises</p>
+      ${S.doneToday ? `<button class="btn ghost">✓ Done today</button>` : `<button class="btn" onclick="startWorkout()">▶ Start workout</button>`}
+    </div>
+    <div class="card"><h3 style="margin-bottom:6px">Today's workout</h3>
+      ${TODAY.exercises.map(e=>`<div class="ex"><span>${e.name}</span><span class="small">${e.sets} × ${e.reps}</span></div>`).join("")}
+    </div>
+    <div class="card row" style="cursor:pointer" onclick="go({tab:'coach'})">${av()}
+      <div><h3>New message from __NAME__</h3><p class="small">"Take 10% off for a week and nail your bracing…"</p></div></div>`,
+
+  programs: () => {
+    if (S.program !== null) {
+      const p = PROGRAMS[S.program];
+      return `<button class="back" onclick="go({program:null})">← Programs</button>
+        <div class="thumb" style="height:180px;margin-bottom:16px;font-size:30px">📋</div>
+        <h1>${p.name}</h1>
+        <p class="muted" style="margin:8px 0 14px">${p.weeks} weeks · ${p.days} days/week · ${p.level}</p>
+        <p class="muted">${p.desc}</p>
+        <div class="card" style="margin-top:16px">
+          ${Array.from({length:Math.min(p.weeks,4)},(_,w)=>`<div class="ex"><span>Week ${w+1}</span><span class="small">${p.days} workouts ${w===0&&p.progress?'· ✓ done':''}</span></div>`).join("")}
+          ${p.weeks>4?`<p class="small" style="padding-top:8px">+ ${p.weeks-4} more weeks</p>`:""}
+        </div>
+        ${guard(`<button class="btn" onclick="go({tab:'today',program:null})">${p.progress? 'Continue program':'Start this program'}</button>`)}`;
+    }
+    return `<h1 style="margin-bottom:6px">Programs</h1><p class="muted" style="margin-bottom:18px">Step-by-step plans built from __NAME__'s videos.</p>
+      ${PROGRAMS.map((p,i)=>`<div class="card row" style="cursor:pointer" onclick="go({program:${i}})">
+        <div class="thumb" style="width:64px;height:64px;font-size:24px">📋</div>
+        <div style="flex:1"><h3>${p.name}</h3><p class="small">${p.weeks} weeks · ${p.days}×/week · ${p.level}</p>
+        ${p.progress?`<div class="progress"><div style="width:${p.progress*100}%"></div></div>`:""}</div>
+        ${!S.subscribed && i>0 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}`;
+  },
+
+  library: () => {
+    const list = VIDEOS.filter(v => S.filter==="All" || v.part===S.filter);
+    return `<h1 style="margin-bottom:6px">Library</h1><p class="muted" style="margin-bottom:14px">Every video, sorted by lift.</p>
+      <div style="margin-bottom:10px">${FILTERS.map(f=>`<button class="pill ${S.filter===f?'on':''}" onclick="go({filter:'${f}'})">${f}</button>`).join("")}</div>
+      ${list.map((v,i)=>`<div class="card row" style="padding:12px">
+        <div class="thumb" style="width:72px;height:90px;font-size:22px">▶</div>
+        <div style="flex:1"><h3 style="font-size:15px">${v.name}</h3><p class="small" style="margin-top:4px">${v.part} · ${v.eq} · ${v.min} min</p></div>
+        ${!S.subscribed && i>1 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}
+      <h3 style="margin:18px 0 10px">Shop & community</h3>
+      <div class="card"><p class="muted" style="font-size:14px;margin-bottom:8px">Everything from my link in bio, inside the app.</p>
+        ${["Your apparel line","Training gear: your discount code","Supplements: your discount code","Join the community"].map(g=>`<div class="ex"><span>${g}</span><span class="small">View ›</span></div>`).join("")}</div>`;
+  },
+
+  coach: () => S.subscribed ? `
+    <div class="row" style="margin-bottom:12px">${av()}
+      <div><h3>__NAME__</h3><p class="small">Usually replies within 48 hours</p></div></div>
+    <div id="chat" style="height:520px;overflow-y:auto;padding:6px 0">
+      ${S.messages.map(m=>`<div class="bubble ${m.me?'me':'them'}">${m.text}</div>`).join("")}
+    </div>
+    <div class="row" style="margin-top:8px"><input class="msg" id="msg" placeholder="Ask __NAME__ something…" onkeydown="if(event.key==='Enter')send()"><button class="send" onclick="send()">➤</button></div>`
+    : `<div class="center" style="padding-top:80px">${av("margin:0 auto 16px;width:72px;height:72px;font-size:26px")}
+      <h1>Message __NAME__ directly</h1><p class="muted" style="margin:10px 0">Members can ask __NAME__ for form checks, swaps and advice.</p>
+      <button class="btn" onclick="go({view:'paywall'})">Become a member</button></div>`,
+
+  progress: () => {
+    const days = ["M","T","W","T","F","S","S"], done = [1,0,1,0,1,1,S.doneToday?1:0];
+    return `<h1 style="margin-bottom:18px">Progress</h1>
+      <div class="card"><p class="small">CURRENT STREAK</p><div class="big">${S.streak}</div><p class="muted">days in a row</p>
+        <div class="week">${days.map((d,i)=>`<div class="day"><div class="dot ${done[i]?'done':''}">${done[i]?'✓':''}</div>${d}</div>`).join("")}</div></div>
+      <div class="row" style="gap:12px">
+        <div class="card" style="flex:1"><p class="small">THIS MONTH</p><div class="big" style="font-size:36px">${9+(S.doneToday?1:0)}</div><p class="small">workouts</p></div>
+        <div class="card" style="flex:1"><p class="small">PROGRAM</p><div class="big" style="font-size:36px">12%</div><p class="small">${planName()}</p></div>
+      </div>
+      <h3 style="margin:10px 0 12px">Milestones</h3>
+      <div class="grid3">
+        <div class="badge"><span class="e">🥇</span>First workout</div>
+        <div class="badge"><span class="e">🔥</span>3-day streak</div>
+        <div class="badge ${S.doneToday?'':'locked'}"><span class="e">💪</span>10 workouts</div>
+        <div class="badge locked"><span class="e">📅</span>Full week</div>
+        <div class="badge locked"><span class="e">🏆</span>Finish a program</div>
+        <div class="badge locked"><span class="e">⚡</span>30-day streak</div>
+      </div>`;
+  }
+};
+
+function av(style=""){
+  return S.photo
+    ? `<div class="avatar" style="${style};background:url('${S.photo}') center/cover"></div>`
+    : `<div class="avatar" style="${style}">${CREATOR.initial}</div>`;
+}
+function addPhoto(input){
+  const f = input.files && input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => go({ photo: e.target.result });
+  r.readAsDataURL(f);
+}
+function guard(html){ return S.subscribed ? html : `<button class="btn" onclick="go({view:'paywall'})">Unlock with membership</button>`; }
+function answer(o){ S.answers[S.q]=o; if(S.q<QUIZ.length-1) go({q:S.q+1}); else go({view:'plan'}); }
+function startWorkout(){ go({view:'player',player:{ex:0,set:1,resting:false,t:0}}); }
+function quitPlayer(){ clearInterval(timerId); go({view:'app',tab:'today'}); }
+function doneSet(){
+  const p=S.player, ex=TODAY.exercises[p.ex];
+  if(p.set<ex.sets){ p.set++; }
+  else if(p.ex<TODAY.exercises.length-1){ p.ex++; p.set=1; }
+  else { clearInterval(timerId); S.doneToday=true; S.streak++; go({view:'done'}); return; }
+  p.resting=true; p.t=45; render();
+  clearInterval(timerId);
+  timerId=setInterval(()=>{ p.t--; const el=$("t"); if(el) el.textContent=p.t; if(p.t<=0) skipRest(); },1000);
+}
+function skipRest(){ clearInterval(timerId); S.player.resting=false; render(); }
+function send(){
+  const v=$("msg").value.trim(); if(!v) return;
+  S.messages.push({me:true,text:v}); render();
+  setTimeout(()=>{ S.messages.push({me:false,text:"(__NAME__ gets a notification. In the real app, his reply would show up here.)"}); if(S.tab==='coach'&&S.view==='app') render(); },1200);
+}
+render();
+</script>
+</body>
+</html>
