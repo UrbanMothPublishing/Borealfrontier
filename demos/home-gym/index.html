@@ -46,6 +46,7 @@
   .badge .e{font-size:26px;display:block;margin-bottom:6px}
   .badge.locked{opacity:.35}
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .msgbtn{background:#24221f;color:#f4f1ec;border:1px solid #3a3733;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
   .back{background:none;border:none;color:#ff7a3d;font-size:15px;cursor:pointer;margin-bottom:14px;padding:0}
   .progress{height:5px;background:#2b2825;border-radius:9px;overflow:hidden;margin:8px 0}
   .progress div{height:100%;background:#ff7a3d}
@@ -124,10 +125,10 @@ function render() {
   const sc = $("screen"), tabs = $("tabs");
   const inApp = S.view === "app";
   tabs.style.display = inApp ? "flex" : "none";
-  sc.innerHTML = VIEWS[S.view]().split("__NAME__").join(CREATOR.name);
+  sc.innerHTML = withTop(VIEWS[S.view]().split("__NAME__").join(CREATOR.name));
   sc.scrollTop = 0;
   if (inApp) {
-    const t = [["today","🏠","Today"],["programs","📋","Programs"],["library","▶️","Library"],["coach","💬","Coach"],["progress","📈","Progress"]];
+    const t = [["today","🏠","Today"],["programs","📋","Programs"],["library","▶️","Library"],["gear","🛍️","My Gear"],["progress","📈","Progress"]];
     tabs.innerHTML = t.map(([k,i,l]) => `<button class="${S.tab===k?'on':''}" onclick="go({tab:'${k}',program:null})"><span class="i">${i}</span>${l}</button>`).join("");
   }
   if (S.view === "app" && S.tab === "coach") {
@@ -269,11 +270,16 @@ const TABS = {
       ${list.map((v,i)=>`<div class="card row" style="padding:12px">
         <div class="thumb" style="width:72px;height:90px;font-size:22px">▶</div>
         <div style="flex:1"><h3 style="font-size:15px">${v.name}</h3><p class="small" style="margin-top:4px">${v.part} · ${v.eq} · ${v.min} min</p></div>
-        ${!S.subscribed && i>1 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}
-      <h3 style="margin:18px 0 10px">__NAME__'s home gym gear</h3>
-      <div class="card"><p class="muted" style="font-size:14px;margin-bottom:8px">The equipment __NAME__ uses in his videos, with his links.</p>
-        ${["Kettlebells (start with 2 weights)","Doorway or outdoor pull-up bar","Resistance band set","Indian clubs / steel mace"].map(g=>`<div class="ex"><span>${g}</span><span class="small">View ›</span></div>`).join("")}</div>`;
+        ${!S.subscribed && i>1 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}`;
   },
+
+  gear: () => `<h1 style="margin-bottom:6px">My Gear</h1>
+      <p class="muted" style="margin-bottom:16px">The equipment __NAME__ uses in his videos, with his links.</p>
+      ${["Kettlebells (start with 2 weights)","Doorway or outdoor pull-up bar","Resistance band set","Indian clubs / steel mace"].map(g=>`<div class="card row" style="padding:12px;cursor:pointer">
+        <div class="thumb" style="width:64px;height:64px;font-size:24px">🛍️</div>
+        <div style="flex:1"><h3 style="font-size:15px">${g}</h3><p class="small" style="margin-top:4px">Tap to shop</p></div>
+        <span class="small">›</span></div>`).join("")}
+      <p class="small" style="margin-top:10px">${CREATOR.name} may earn a commission on purchases made through these links.</p>`,
 
   coach: () => S.subscribed ? `
     <div class="row" style="margin-bottom:12px">${av()}
@@ -317,6 +323,11 @@ function addPhoto(input){
   const r = new FileReader();
   r.onload = e => go({ photo: e.target.result });
   r.readAsDataURL(f);
+}
+function withTop(html){
+  if (S.view !== "app") return html;
+  if (S.tab === "coach") return `<button class="back" onclick="go({tab:'today'})">← Back</button>` + html;
+  return `<div style="display:flex;justify-content:flex-end;margin:-6px 0 12px"><button class="msgbtn" onclick="go({tab:'coach'})">💬 Message ${CREATOR.name}</button></div>` + html;
 }
 function guard(html){ return S.subscribed ? html : `<button class="btn" onclick="go({view:'paywall'})">Unlock with membership</button>`; }
 function answer(o){ S.answers[S.q]=o; if(S.q<QUIZ.length-1) go({q:S.q+1}); else go({view:'plan'}); }
