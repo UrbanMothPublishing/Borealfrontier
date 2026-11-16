@@ -60,7 +60,11 @@
 <body>
 <p class="note" style="margin-bottom:6px"><a href="/" style="color:#1c1a17;font-weight:700;text-decoration:none">🍁 Boreal Frontier</a> · <a href="/#contact" style="color:#4a4640">Get your own app</a></p>
 <p class="note"><b>Concept: a subscription strength app built from a creator's Instagram videos.</b> Type a creator name below to preview it. Workouts, messages and prices are made-up samples; the real app would be built from the creator's own Reels.</p>
-<input id="nm" placeholder="Type a creator name, e.g. your first name" oninput="setName(this.value)" style="width:390px;max-width:100%;padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px;margin-bottom:14px">
+<div style="width:390px;max-width:100%;display:grid;gap:8px;margin-bottom:14px">
+  <input id="nm" placeholder="Your name, e.g. Joe" oninput="setName(this.value)" style="padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px">
+  <input id="hd" placeholder="Your Instagram handle, e.g. @yourname" oninput="setHandle(this.value)" style="padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px">
+  <textarea id="bio" rows="3" placeholder="Paste your Instagram bio (optional)" oninput="setBio(this.value)" style="padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px;font-family:inherit;resize:vertical"></textarea>
+</div>
 <div id="phone">
   <div id="screen"></div>
   <nav id="tabs"></nav>
@@ -69,6 +73,9 @@
 <script>
 const CREATOR = { name: "Your Name", handle: "@yourhandle", initial: "Y" };
 function setName(v){ v=v.trim(); CREATOR.name=v||"Your Name"; CREATOR.initial=(v[0]||"Y").toUpperCase(); render(); }
+function setHandle(v){ v=v.trim().replace(/^@+/,"").replace(/[^A-Za-z0-9._]/g,"").replace(/\.+$/,""); CREATOR.handle=v?"@"+v:"@yourhandle"; render(); }
+function esc(t){ return t.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function setBio(v){ S.bio=v.trim(); render(); }
 function planName(){ const d=S.answers[2]||"3 days"; return d.startsWith("2")?"Strength: 2 Day Full Body":d.startsWith("4")?"Strength: 4 Day Upper/Lower":"Strength: 3 Day Push/Pull/Legs"; }
 
 const S = {
@@ -152,7 +159,7 @@ const VIEWS = {
              </label>`}
         <p class="small" style="margin-bottom:6px">${CREATOR.handle}</p>
         <h1>Train with ${CREATOR.name}.</h1>
-        <p class="muted" style="margin-top:10px">Strength programs built from my training videos. Your first workout is free.</p>
+        <p class="muted" style="margin-top:10px;white-space:pre-line">${S.bio ? esc(S.bio) : "Strength programs built from my training videos."}</p><p class="muted" style="margin-top:8px">Your first workout is free.</p>
       </div>
       <div><button class="btn" onclick="go({view:'quiz',q:0})">Start my free workout</button>
       <p class="small center" style="margin-top:12px">Already a member? Log in</p></div>
