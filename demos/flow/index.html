@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FitLaunch demo · creator setup and follower app</title>
+<link rel="icon" href="/fitlaunch-icon.svg" type="image/svg+xml">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0b1513;color:#f4f1ea;display:flex;flex-direction:column;align-items:center;padding:20px 12px 40px;min-height:100vh}
+  .note{color:#b9c6c0;font-size:13px;max-width:420px;text-align:center;margin-bottom:14px;line-height:1.45}
+  .note b{color:#f4f1ea}
+  #phone{width:390px;max-width:100%;height:800px;background:#0b1513;border-radius:44px;border:10px solid #1f3a33;overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  #screen{flex:1;overflow-y:auto;padding:22px 18px 18px}
+  #tabs{display:flex;border-top:1px solid #22332f;background:#0f1c19;padding:8px 4px 14px}
+  #tabs button{flex:1;background:none;border:none;color:#8fa39b;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0}
+  #tabs button .i{font-size:19px}
+  #tabs button.on{color:#ff5b4f}
+  h1{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+  h2{font-size:20px;font-weight:700;margin-bottom:12px}
+  h3{font-size:16px;font-weight:700}
+  .muted{color:#b9c6c0;font-size:14px;line-height:1.45}
+  .small{font-size:12px;color:#b9c6c0}
+  .btn{display:block;width:100%;background:#e0362a;color:#ffffff;font-weight:800;font-size:17px;border:none;border-radius:16px;padding:17px;cursor:pointer;margin-top:14px}
+  .btn.ghost{background:#182b27;color:#f4f1ea;font-weight:600}
+  .card{background:#13221f;border-radius:18px;padding:16px;margin-bottom:12px}
+  .hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#3a1714,#13221f 70%);margin-bottom:14px}
+  .thumb{border-radius:14px;background:linear-gradient(135deg,#1f3a33,#10201c);display:flex;align-items:center;justify-content:center;color:#b9c6c0;font-size:13px;flex-shrink:0}
+  .row{display:flex;gap:12px;align-items:center}
+  .pill{display:inline-block;background:#22332f;color:#d8e0dc;border-radius:99px;padding:5px 11px;font-size:12px;margin:0 6px 6px 0;cursor:pointer;border:none}
+  .pill.on{background:#e0362a;color:#ffffff;font-weight:700}
+  .opt{display:block;width:100%;text-align:left;background:#13221f;border:2px solid #22332f;color:#f4f1ea;border-radius:16px;padding:17px;font-size:16px;margin-bottom:10px;cursor:pointer}
+  .opt:hover{border-color:#e0362a}
+  .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#e0362a,#a81f15);display:flex;align-items:center;justify-content:center;font-weight:800;color:#ffffff;flex-shrink:0}
+  .ex{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #22332f;font-size:15px}
+  .ex:last-child{border:none}
+  .bubble{max-width:80%;padding:11px 14px;border-radius:18px;font-size:14px;line-height:1.4;margin-bottom:8px}
+  .me{background:#e0362a;color:#ffffff;margin-left:auto;border-bottom-right-radius:5px}
+  .them{background:#182b27;border-bottom-left-radius:5px}
+  .big{font-size:52px;font-weight:800;color:#ff5b4f;line-height:1}
+  .week{display:flex;justify-content:space-between;margin-top:12px}
+  .day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#b9c6c0}
+  .dot{width:30px;height:30px;border-radius:50%;background:#22332f;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .dot.done{background:#e0362a;color:#ffffff;font-weight:800}
+  .badge{background:#182b27;border-radius:16px;padding:14px 8px;text-align:center;font-size:12px;color:#d8e0dc}
+  .badge .e{font-size:26px;display:block;margin-bottom:6px}
+  .badge.locked{opacity:.35}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .msgbtn{background:#182b27;color:#f4f1ea;border:1px solid #2e4a43;border-radius:99px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer}
+  .back{background:none;border:none;color:#ff5b4f;font-size:15px;cursor:pointer;margin-bottom:14px;padding:0}
+  .progress{height:5px;background:#22332f;border-radius:9px;overflow:hidden;margin:8px 0}
+  .progress div{height:100%;background:#e0362a}
+  .timer{font-size:72px;font-weight:800;text-align:center;color:#ff5b4f;margin:16px 0}
+  input.msg{flex:1;background:#182b27;border:none;border-radius:99px;padding:13px 16px;color:#f4f1ea;font-size:15px}
+  .send{background:#e0362a;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer}
+  .center{text-align:center}
+  .lock{font-size:12px;background:#22332f;color:#d8e0dc;padding:3px 8px;border-radius:8px}
+  .modes{width:390px;max-width:100%;display:flex;gap:6px;margin-bottom:12px}
+  .modes button{flex:1;background:#10201c;border:1px solid #2e4a43;color:#b9c6c0;border-radius:12px;padding:10px 6px;font-size:12px;font-weight:700;cursor:pointer}
+  .modes button.on{background:#e0362a;border-color:#e0362a;color:#fff}
+  .step{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#ff5b4f;margin-bottom:10px}
+  .field{display:block;width:100%;background:#10201c;border:1px solid #2e4a43;color:#f4f1ea;border-radius:12px;padding:13px 14px;font-size:15px;font-family:inherit;margin-top:6px}
+  .lbl{font-size:12px;color:#b9c6c0;font-weight:600;display:block;margin-top:14px}
+  .chk{display:flex;gap:12px;align-items:center;padding:10px 0;font-size:15px}
+  .chk .ic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .sw{width:40px;height:40px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+  .sw.on{border-color:#f4f1ea}
+  .warn{background:#2b2010;border:1px solid #6b4d1a;color:#f3d9a4;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45;margin-bottom:10px}
+  .ok{background:#10261c;border:1px solid #1f5a3d;color:#bfe8cf;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45;margin-bottom:10px}
+  .tagai{font-size:11px;color:#8fa39b}
+  .tagai.low{color:#f3b45a}
+  .spin{width:16px;height:16px;border:2px solid #2e4a43;border-top-color:#ff5b4f;border-radius:50%;animation:sp 0.8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+<style id="accent"></style>
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init("phc_nv2jjj4XT3zcxw9emkhMQZwCRZpPedfz2yPPwEqN8KZb",{api_host:"https://us.i.posthog.com",persistence:"memory",autocapture:false,disable_session_recording:true,capture_pageview:true,capture_pageleave:true,person_profiles:"identified_only"});
+</script>
+</head>
+<body>
+<div style="width:390px;max-width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><a href="/free-app/" style="display:flex;align-items:center;gap:10px;text-decoration:none"><svg width="34" height="34" viewBox="0 0 1080 1080" style="display:block"><rect width="1080" height="1080" rx="240" fill="#e0362a"/><g fill="#f4f1ea"><rect x="300" y="300" width="96" height="480" rx="10"/><rect x="300" y="300" width="300" height="92" rx="10"/><path d="M560 250 L720 346 L560 442 Z"/><rect x="300" y="500" width="230" height="88" rx="10"/><rect x="610" y="420" width="96" height="360" rx="10"/><rect x="610" y="692" width="200" height="88" rx="10"/></g></svg><span style="font-weight:800;font-size:22px;letter-spacing:-.5px;color:#f4f1ea">Fit<span style="color:#ff5b4f">Launch</span></span></a><a href="/free-app/" onclick="posthog.capture('free_app_link_clicked',{from:'demo'})" style="background:#e0362a;color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:9px 14px;border-radius:99px">Get your own app, free</a></div>
+<div class="modes">
+  <button id="mC" onclick="startCreator()">1 · Creator setup</button>
+  <button id="mF" onclick="startFollower()">2 · Follower app</button>
+  <button id="mD" onclick="go({view:'c_dash'})">3 · Creator dashboard</button>
+</div>
+<p class="note"><b>How FitLaunch works, start to finish.</b> Set up an app as a creator, then open it as a follower. Everything here is sample data: nothing connects to Instagram or charges money.</p>
+<div id="phone">
+  <div id="screen"></div>
+  <nav id="tabs"></nav>
+</div>
+
+<script>
+const CREATOR = { name: "Sam", handle: "@samlifts", initial: "S" };
+function setName(v){ v=v.trim(); CREATOR.name=v||"Your Name"; CREATOR.initial=(v[0]||"Y").toUpperCase(); render(); }
+function setHandle(v){ v=v.trim().replace(/^@+/,"").replace(/[^A-Za-z0-9._]/g,"").replace(/\.+$/,""); CREATOR.handle=v?"@"+v:"@yourhandle"; render(); }
+function esc(t){ return t.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function setBio(v){ S.bio=v.trim(); render(); }
+
+const S = {
+  view: "c_start", tab: "today", account: false, price: "$14.99", accent: "#e0362a", approved: {0:true,1:true,2:true,3:true}, removed: {}, build: 0, plan: 0, payoutSet: false, copied: false, photo: null, q: 0, answers: {}, subscribed: false,
+  streak: 4, doneToday: false, program: null, filter: "All",
+  player: { ex: 0, set: 1, resting: false, t: 0 },
+  messages: [
+    { me: false, text: "Welcome to the crew! Drop me a message any time — form checks, swaps for bad knees, whatever you need." },
+    { me: true, text: "Hey __NAME__, my lower back gets tight on swings. Should I go lighter?" },
+    { me: false, text: "Probably, yes. Drop to a lighter bell and focus on snapping your hips forward, not lifting with your back. Send me a side-on video next session and I'll take a look." }
+  ]
+};
+let timerId = null;
+
+const QUIZ = [
+  { q: "What's your main goal?", opts: ["Build strength", "Lose body fat", "Move and feel better", "All of the above"] },
+  { q: "What do you have at home?", opts: ["Kettlebells", "Kettlebells, bands and a pull-up bar", "Just my bodyweight"] },
+  { q: "How many days a week can you train?", opts: ["2 days", "3 days", "4 days"] }
+];
+
+const TODAY = {
+  title: "Kettlebell Strength A", label: "Week 2 · Day 1", mins: 35,
+  exercises: [
+    { name: "Kettlebell Swing", sets: 4, reps: "15 reps" },
+    { name: "Goblet Squat", sets: 3, reps: "10 reps" },
+    { name: "Single-Arm Kettlebell Row", sets: 3, reps: "10 each side" },
+    { name: "Pull-Up (band-assisted if needed)", sets: 3, reps: "as many as you can" },
+    { name: "Suitcase Carry", sets: 3, reps: "40 sec each side" }
+  ]
+};
+
+const PROGRAMS = [
+  { name: "Home Gym Strength", weeks: 8, days: 3, level: "Beginner", desc: "Full-body strength with kettlebells and a pull-up bar. Three 35-minute sessions a week.", progress: 0.12 },
+  { name: "Pull-Up Progression", weeks: 6, days: 3, level: "All levels", desc: "From band-assisted to your first strict pull-ups, then more.", progress: 0 },
+  { name: "Clubs & Mobility", weeks: 4, days: 4, level: "All levels", desc: "Indian clubs and mace work for healthy shoulders, hips and back.", progress: 0 },
+  { name: "Short on Time", weeks: 4, days: 4, level: "Intermediate", desc: "20-minute kettlebell sessions for busy weeks.", progress: 0 }
+];
+
+const VIDEOS = [
+  { name: "Kettlebell swing: hinge, don't squat", part: "Kettlebell", eq: "Kettlebell", min: 2 },
+  { name: "Pull complex", part: "Pull-up bar", eq: "Pull-up bar", min: 3 },
+  { name: "Goblet squat setup", part: "Kettlebell", eq: "Kettlebell", min: 1 },
+  { name: "Club mill for shoulders", part: "Clubs & mace", eq: "Indian clubs", min: 2 },
+  { name: "Mace 360 basics", part: "Clubs & mace", eq: "Steel mace", min: 3 },
+  { name: "Band pull-aparts", part: "Bands", eq: "Resistance band", min: 1 },
+  { name: "Band-assisted pull-up", part: "Pull-up bar", eq: "Band + bar", min: 2 },
+  { name: "Hip and back mobility flow", part: "Bodyweight", eq: "None", min: 8 }
+];
+const FILTERS = ["All", "Kettlebell", "Pull-up bar", "Clubs & mace", "Bands", "Bodyweight"];
+
+const $ = id => document.getElementById(id);
+function go(patch) { Object.assign(S, patch); render(); }
+
+function render() {
+  const sc = $("screen"), tabs = $("tabs");
+  const inApp = S.view === "app";
+  tabs.style.display = inApp ? "flex" : "none";
+  sc.innerHTML = withTop(VIEWS[S.view]().split("__NAME__").join(CREATOR.name));
+  sc.scrollTop = 0;
+  if (inApp) {
+    const t = [["today","🏠","Today"],["programs","📋","Programs"],["library","▶️","Library"],["gear","🛍️","My Gear"],["progress","📈","Progress"]];
+    tabs.innerHTML = t.map(([k,i,l]) => `<button class="${S.tab===k?'on':''}" onclick="go({tab:'${k}',program:null})"><span class="i">${i}</span>${l}</button>`).join("");
+  }
+  if (S.view === "app" && S.tab === "coach") {
+    const box = $("chat"); if (box) box.scrollTop = box.scrollHeight;
+  }
+}
+
+const VIEWS = {
+  welcome: () => `
+    <div style="height:100%;display:flex;flex-direction:column;justify-content:space-between">
+      <div>
+        ${S.photo
+          ? `<div style="height:340px;border-radius:22px;margin-bottom:22px;background:url('${S.photo}') center/cover;position:relative">
+               <div style="position:absolute;inset:0;border-radius:22px;background:linear-gradient(transparent 55%,rgba(11,21,19,.85))"></div>
+               <label class="pill" style="position:absolute;top:12px;right:12px;background:rgba(11,21,19,.7)">Change photo<input type="file" accept="image/*" onchange="addPhoto(this)" hidden></label>
+             </div>`
+          : `<label class="thumb" style="height:340px;font-size:15px;margin-bottom:22px;flex-direction:column;gap:8px;cursor:pointer;border:2px dashed #2e4a43">
+               <span style="font-size:40px">📷</span><b>Tap to add ${CREATOR.name}'s photo</b><span class="small">Choose an image from your computer</span>
+               <input type="file" accept="image/*" onchange="addPhoto(this)" hidden>
+             </label>`}
+        <p class="small" style="margin-bottom:6px">${CREATOR.handle}</p>
+        <h1>Train with ${CREATOR.name}.</h1>
+        <p class="muted" style="margin-top:10px;white-space:pre-line">${S.bio ? esc(S.bio) : "Home-gym strength programs built from my videos. Kettlebells, bands and a pull-up bar are all you need."}</p><p class="muted" style="margin-top:8px">Your first workout is free.</p>
+      </div>
+      <div><button class="btn" onclick="go({view:'quiz',q:0})">Start my free workout</button>
+      <p class="small center" style="margin-top:12px;cursor:pointer" onclick="go({view:'f_login'})">Already a member? <u>Log in</u></p>
+      <p class="small center" style="margin-top:10px;opacity:.7">Powered by <b style="color:#f4f1ea">Fit</b><b style="color:#ff5b4f">Launch</b></p></div>
+    </div>`,
+
+  quiz: () => {
+    const Q = QUIZ[S.q];
+    return `<button class="back" onclick="${S.q? `go({q:${S.q-1}})` : `go({view:'welcome'})`}">← Back</button>
+      <div class="progress"><div style="width:${(S.q+1)/QUIZ.length*100}%"></div></div>
+      <p class="small" style="margin:6px 0 18px">Question ${S.q+1} of ${QUIZ.length}</p>
+      <h1 style="margin-bottom:22px">${Q.q}</h1>
+      ${Q.opts.map(o => `<button class="opt" onclick="answer('${o}')">${o}</button>`).join("")}`;
+  },
+
+  plan: () => `
+    <p class="small" style="margin-bottom:8px">Built for you</p>
+    <h1>Your plan is ready.</h1>
+    <div class="hero" style="margin-top:20px">
+      <p class="small">PROGRAM</p>
+      <h2 style="margin:4px 0 6px">Home Gym Strength</h2>
+      <p class="muted">8 weeks · ${S.answers[2] || "3 days"} a week · ${S.answers[1] || "Kettlebells"}</p>
+    </div>
+    <div class="card"><p class="muted">__NAME__ picked this based on your goal: <b style="color:#f4f1ea">${S.answers[0] || "Build strength"}</b>. You can switch programs any time.</p></div>
+    <button class="btn" onclick="go({view:'app',tab:'today'})">Let's go</button>`,
+
+  app: () => TABS[S.tab](),
+
+  player: () => {
+    const p = S.player, ex = TODAY.exercises[p.ex], next = TODAY.exercises[p.ex+1];
+    const pct = (p.ex / TODAY.exercises.length) * 100;
+    if (p.resting) return `
+      <button class="back" onclick="quitPlayer()">✕ End workout</button>
+      <p class="small center" style="margin-top:40px">REST</p>
+      <div class="timer" id="t">${p.t}</div>
+      <p class="muted center">Next: ${p.set <= ex.sets ? `${ex.name}, set ${p.set} of ${ex.sets}` : (next ? next.name : "Finish")}</p>
+      <button class="btn ghost" onclick="skipRest()">Skip rest</button>`;
+    return `
+      <button class="back" onclick="quitPlayer()">✕ End workout</button>
+      <div class="progress"><div style="width:${pct}%"></div></div>
+      <div class="thumb" style="height:250px;margin:14px 0 18px;flex-direction:column;gap:6px"><span style="font-size:42px">▶</span>__NAME__ demos: ${ex.name}</div>
+      <p class="small">Exercise ${p.ex+1} of ${TODAY.exercises.length}</p>
+      <h1 style="margin:4px 0 6px">${ex.name}</h1>
+      <p style="font-size:22px;font-weight:700;color:#e0362a">Set ${p.set} of ${ex.sets} · ${ex.reps}</p>
+      <button class="btn" style="padding:22px;font-size:19px" onclick="doneSet()">Done ✓</button>
+      ${next ? `<p class="small center" style="margin-top:14px">Up next: ${next.name}</p>` : ""}`;
+  },
+
+  done: () => `
+    <div class="center" style="padding-top:60px">
+      <div style="font-size:64px">🔥</div>
+      <h1 style="margin:14px 0 8px">Workout done.</h1>
+      <p class="muted">That's ${S.streak} days in a row. __NAME__ would be proud.</p>
+      <div class="card" style="margin-top:24px;text-align:left">
+        <div class="row">${av()}
+        <p class="muted" style="font-size:14px">"Great first session. Next one is upper body: see you Wednesday." <br><span class="small">__NAME__</span></p></div>
+      </div>
+      <button class="btn" onclick="go({view: S.subscribed ? 'app' : (S.account ? 'paywall' : 'f_signup'), tab:'today'})">Continue</button>
+    </div>`,
+
+  paywall: () => `
+    <p class="small" style="margin-bottom:8px">You finished your free workout 💪</p>
+    <h1>Keep training with __NAME__.</h1>
+    <div class="card" style="margin-top:20px">
+      ${["All 4 programs and every workout video","Your plan, updated as you get stronger","Message __NAME__ directly for advice","Track your streaks and progress"].map(t=>`<p style="padding:7px 0;font-size:15px">✓ ${t}</p>`).join("")}
+    </div>
+    <div class="hero center" style="border:2px solid #e0362a">
+      <p style="font-size:30px;font-weight:800">${S.price}<span class="muted" style="font-size:15px"> / month</span></p>
+      <p class="muted">7 days free, cancel anytime</p>
+    </div>
+    <button class="btn" onclick="go({subscribed:true,view:'app',tab:'today'})">Start my free week</button>
+    <p class="small center" style="margin-top:12px;cursor:pointer" onclick="go({view:'app',tab:'today'})">Not now</p>`
+};
+
+const TABS = {
+  today: () => `
+    <div class="row" style="margin-bottom:20px">${av()}
+      <div><p class="small">Good morning</p><h3>Day ${S.streak} streak 🔥</h3></div></div>
+    <div class="hero">
+      <p class="small">${TODAY.label} · Home Gym Strength</p>
+      <h2 style="margin:6px 0 4px">${TODAY.title}</h2>
+      <p class="muted">${TODAY.mins} min · ${TODAY.exercises.length} exercises</p>
+      ${S.doneToday ? `<button class="btn ghost">✓ Done today</button>` : `<button class="btn" onclick="startWorkout()">▶ Start workout</button>`}
+    </div>
+    <div class="card"><h3 style="margin-bottom:6px">Today's workout</h3>
+      ${TODAY.exercises.map(e=>`<div class="ex"><span>${e.name}</span><span class="small">${e.sets} × ${e.reps}</span></div>`).join("")}
+    </div>
+    <div class="card row" style="cursor:pointer" onclick="go({tab:'coach'})">${av()}
+      <div><h3>New message from __NAME__</h3><p class="small">"Probably, yes. Drop to a lighter bell and…"</p></div></div>`,
+
+  programs: () => {
+    if (S.program !== null) {
+      const p = PROGRAMS[S.program];
+      return `<button class="back" onclick="go({program:null})">← Programs</button>
+        <div class="thumb" style="height:180px;margin-bottom:16px;font-size:30px">📋</div>
+        <h1>${p.name}</h1>
+        <p class="muted" style="margin:8px 0 14px">${p.weeks} weeks · ${p.days} days/week · ${p.level}</p>
+        <p class="muted">${p.desc}</p>
+        <div class="card" style="margin-top:16px">
+          ${Array.from({length:Math.min(p.weeks,4)},(_,w)=>`<div class="ex"><span>Week ${w+1}</span><span class="small">${p.days} workouts ${w===0&&p.progress?'· ✓ done':''}</span></div>`).join("")}
+          ${p.weeks>4?`<p class="small" style="padding-top:8px">+ ${p.weeks-4} more weeks</p>`:""}
+        </div>
+        ${guard(`<button class="btn" onclick="go({tab:'today',program:null})">${p.progress? 'Continue program':'Start this program'}</button>`)}`;
+    }
+    return `<h1 style="margin-bottom:6px">Programs</h1><p class="muted" style="margin-bottom:18px">Step-by-step plans built from __NAME__'s videos.</p>
+      ${PROGRAMS.map((p,i)=>`<div class="card row" style="cursor:pointer" onclick="go({program:${i}})">
+        <div class="thumb" style="width:64px;height:64px;font-size:24px">📋</div>
+        <div style="flex:1"><h3>${p.name}</h3><p class="small">${p.weeks} weeks · ${p.days}×/week · ${p.level}</p>
+        ${p.progress?`<div class="progress"><div style="width:${p.progress*100}%"></div></div>`:""}</div>
+        ${!S.subscribed && i>0 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}`;
+  },
+
+  library: () => {
+    const list = VIDEOS.filter(v => S.filter==="All" || v.part===S.filter);
+    return `<h1 style="margin-bottom:6px">Library</h1><p class="muted" style="margin-bottom:14px">Every video, sorted by equipment.</p>
+      <div style="margin-bottom:10px">${FILTERS.map(f=>`<button class="pill ${S.filter===f?'on':''}" onclick="go({filter:'${f}'})">${f}</button>`).join("")}</div>
+      ${list.map((v,i)=>`<div class="card row" style="padding:12px">
+        <div class="thumb" style="width:72px;height:90px;font-size:22px">▶</div>
+        <div style="flex:1"><h3 style="font-size:15px">${v.name}</h3><p class="small" style="margin-top:4px">${v.part} · ${v.eq} · ${v.min} min</p></div>
+        ${!S.subscribed && i>1 ? '<span class="lock">🔒</span>' : ''}</div>`).join("")}`;
+  },
+
+  gear: () => `<h1 style="margin-bottom:6px">My Gear</h1>
+      <p class="muted" style="margin-bottom:16px">The equipment __NAME__ uses in his videos, with his links.</p>
+      ${["Kettlebells (start with 2 weights)","Doorway or outdoor pull-up bar","Resistance band set","Indian clubs / steel mace"].map(g=>`<div class="card row" style="padding:12px;cursor:pointer">
+        <div class="thumb" style="width:64px;height:64px;font-size:24px">🛍️</div>
+        <div style="flex:1"><h3 style="font-size:15px">${g}</h3><p class="small" style="margin-top:4px">Tap to shop</p></div>
+        <span class="small">›</span></div>`).join("")}
+      <p class="small" style="margin-top:10px">${CREATOR.name} may earn a commission on purchases made through these links.</p>`,
+
+  coach: () => S.subscribed ? `
+    <div class="row" style="margin-bottom:12px">${av()}
+      <div><h3>__NAME__</h3><p class="small">Usually replies within 48 hours</p></div></div>
+    <div id="chat" style="height:520px;overflow-y:auto;padding:6px 0">
+      ${S.messages.map(m=>`<div class="bubble ${m.me?'me':'them'}">${m.text}</div>`).join("")}
+    </div>
+    <div class="row" style="margin-top:8px"><input class="msg" id="msg" placeholder="Ask __NAME__ something…" onkeydown="if(event.key==='Enter')send()"><button class="send" onclick="send()">➤</button></div>`
+    : `<div class="center" style="padding-top:80px">${av("margin:0 auto 16px;width:72px;height:72px;font-size:26px")}
+      <h1>Message __NAME__ directly</h1><p class="muted" style="margin:10px 0">Members can ask __NAME__ for form checks, swaps and advice.</p>
+      <button class="btn" onclick="go({view:'paywall'})">Become a member</button></div>`,
+
+  progress: () => {
+    const days = ["M","T","W","T","F","S","S"], done = [1,0,1,0,1,1,S.doneToday?1:0];
+    return `<h1 style="margin-bottom:18px">Progress</h1>
+      <div class="card"><p class="small">CURRENT STREAK</p><div class="big">${S.streak}</div><p class="muted">days in a row</p>
+        <div class="week">${days.map((d,i)=>`<div class="day"><div class="dot ${done[i]?'done':''}">${done[i]?'✓':''}</div>${d}</div>`).join("")}</div></div>
+      <div class="row" style="gap:12px">
+        <div class="card" style="flex:1"><p class="small">THIS MONTH</p><div class="big" style="font-size:36px">${9+(S.doneToday?1:0)}</div><p class="small">workouts</p></div>
+        <div class="card" style="flex:1"><p class="small">PROGRAM</p><div class="big" style="font-size:36px">12%</div><p class="small">Home Gym Strength</p></div>
+      </div>
+      <h3 style="margin:10px 0 12px">Milestones</h3>
+      <div class="grid3">
+        <div class="badge"><span class="e">🥇</span>First workout</div>
+        <div class="badge"><span class="e">🔥</span>3-day streak</div>
+        <div class="badge ${S.doneToday?'':'locked'}"><span class="e">💪</span>10 workouts</div>
+        <div class="badge locked"><span class="e">📅</span>Full week</div>
+        <div class="badge locked"><span class="e">🏆</span>Finish a program</div>
+        <div class="badge locked"><span class="e">⚡</span>30-day streak</div>
+      </div>`;
+  }
+};
+
+function av(style=""){
+  return S.photo
+    ? `<div class="avatar" style="${style};background:url('${S.photo}') center/cover"></div>`
+    : `<div class="avatar" style="${style}">${CREATOR.initial}</div>`;
+}
+function addPhoto(input){
+  const f = input.files && input.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => go({ photo: e.target.result });
+  r.readAsDataURL(f);
+}
+function withTop(html){
+  if (S.view !== "app") return html;
+  if (S.tab === "coach") return `<button class="back" onclick="go({tab:'today'})">← Back</button>` + html;
+  return `<div style="display:flex;justify-content:flex-end;margin:-6px 0 12px"><button class="msgbtn" onclick="go({tab:'coach'})">💬 Message ${CREATOR.name}</button></div>` + html;
+}
+function guard(html){ return S.subscribed ? html : `<button class="btn" onclick="go({view:'paywall'})">Unlock with membership</button>`; }
+function answer(o){ S.answers[S.q]=o; if(S.q<QUIZ.length-1) go({q:S.q+1}); else go({view:'plan'}); }
+function startWorkout(){ go({view:'player',player:{ex:0,set:1,resting:false,t:0}}); }
+function quitPlayer(){ clearInterval(timerId); go({view:'app',tab:'today'}); }
+function doneSet(){
+  const p=S.player, ex=TODAY.exercises[p.ex];
+  if(p.set<ex.sets){ p.set++; }
+  else if(p.ex<TODAY.exercises.length-1){ p.ex++; p.set=1; }
+  else { clearInterval(timerId); S.doneToday=true; S.streak++; go({view:'done'}); return; }
+  p.resting=true; p.t=45; render();
+  clearInterval(timerId);
+  timerId=setInterval(()=>{ p.t--; const el=$("t"); if(el) el.textContent=p.t; if(p.t<=0) skipRest(); },1000);
+}
+function skipRest(){ clearInterval(timerId); S.player.resting=false; render(); }
+function send(){
+  const v=$("msg").value.trim(); if(!v) return;
+  S.messages.push({me:true,text:v}); render();
+  setTimeout(()=>{ S.messages.push({me:false,text:"(__NAME__ gets a notification. In the real app, his reply would show up here.)"}); if(S.tab==='coach'&&S.view==='app') render(); },1200);
+}
+
+// ================= FitLaunch flow demo: creator setup, follower sign-in, dashboard =================
+const LOGO=(n)=>`<svg width="${n}" height="${n}" viewBox="0 0 1080 1080" style="display:block;margin:0 auto"><rect width="1080" height="1080" rx="240" fill="#e0362a"/><g fill="#f4f1ea"><rect x="300" y="300" width="96" height="480" rx="10"/><rect x="300" y="300" width="300" height="92" rx="10"/><path d="M560 250 L720 346 L560 442 Z"/><rect x="300" y="500" width="230" height="88" rx="10"/><rect x="610" y="420" width="96" height="360" rx="10"/><rect x="610" y="692" width="200" height="88" rx="10"/></g></svg>`;
+function slug(){ return (CREATOR.handle||"@you").replace(/^@/,"").toLowerCase(); }
+function nameQ(v){ v=v.trim(); CREATOR.name=v||"Sam"; CREATOR.initial=(v[0]||"S").toUpperCase(); }
+function handleQ(v){ v=v.trim().replace(/^@+/,"").replace(/[^A-Za-z0-9._]/g,"").replace(/\.+$/,""); CREATOR.handle=v?"@"+v:"@samlifts"; }
+function setAccent(c){ S.accent=c; const r=document.getElementById("accent");
+  r.textContent = c==="#e0362a" ? "" : `.btn:not(.ghost){background:${c}!important}.pill.on{background:${c}!important}.me{background:${c}!important}.progress div{background:${c}!important}.dot.done{background:${c}!important}#tabs button.on{color:${c}!important}.big,.timer{color:${c}!important}[style*="color:#e0362a"]{color:${c}!important}.avatar{background:${c}!important}`;
+  render(); }
+function startCreator(){ clearInterval(window._bt); go({view:"c_start"}); }
+function startFollower(){ clearInterval(window._bt); go({view:"welcome",subscribed:false,account:false,q:0,answers:{},doneToday:false,streak:0,tab:"today"}); }
+function startBuild(){ go({view:"c_build",build:0}); clearInterval(window._bt);
+  window._bt=setInterval(()=>{ S.build++; if(S.build>=6){ clearInterval(window._bt); go({view:"c_review"}); } else render(); },900); }
+function copyLink(){ try{ navigator.clipboard.writeText("https://fitlaunch.app/"+slug()); }catch(e){} go({copied:true}); }
+const BUILD=[["Importing your Reels","142 videos found"],["Watching your videos and reading captions","Spotting each exercise"],["Finding exercises","64 exercise videos"],["Skipping posts that aren't workouts","31 vlogs, memes and photos skipped"],["Building your workout plans","4 plans ready"]];
+const PLANX=[
+ [["Kettlebell Swing","Legs · Kettlebell · 4 × 15",97],["Goblet Squat","Legs · Kettlebell · 3 × 10",95],["Single-Arm Kettlebell Row","Back · Kettlebell · 3 × 10 each",93],["Pull-Up (band-assisted)","Back · Pull-up bar · 3 × max",91],["Halo with kettlebell","Shoulders · Kettlebell · 2 × 8",61],["Suitcase Carry","Core · Kettlebell · 3 × 40 sec",94]],
+ [["Dead Hang","Grip · Pull-up bar · 3 × 30 sec",96],["Band-Assisted Pull-Up","Back · Band + bar · 4 × 6",95],["Scapular Pull","Back · Pull-up bar · 3 × 8",88],["Negative Pull-Up","Back · Pull-up bar · 3 × 3",92]],
+ [["Club Mill","Shoulders · Indian clubs · 3 × 10",90],["Mace 360","Shoulders · Steel mace · 3 × 8",86],["Hip Opener Flow","Mobility · None · 8 min",94]],
+ [["Kettlebell Complex","Full body · Kettlebell · 4 rounds",89],["Swing + Push-Up Ladder","Full body · Kettlebell · 10 min",84]]
+];
+function stepHead(n,t){ return `<div class="step">Step ${n} of 5</div><h1 style="margin-bottom:10px">${t}</h1>`; }
+
+Object.assign(VIEWS,{
+ c_start:()=>`<div style="min-height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;padding-top:30px">
+   ${LOGO(72)}
+   <h1 style="margin-top:24px">Turn your Reels into your own fitness app.</h1>
+   <p class="muted" style="margin-top:12px">Free to set up. We only earn when your followers subscribe.</p>
+   <div style="margin-top:34px">
+     <button class="btn" onclick="go({view:'c_connect'})">Continue with Apple</button>
+     <button class="btn ghost" onclick="go({view:'c_connect'})">Continue with Google</button>
+     <button class="btn ghost" onclick="go({view:'c_connect'})">Continue with email</button>
+   </div>
+   <p class="small" style="margin-top:18px">For fitness creators. Your followers sign in separately.</p></div>`,
+
+ c_connect:()=>`<button class="back" onclick="go({view:'c_start'})">← Back</button>
+   ${stepHead(1,"Connect your Instagram")}
+   <p class="muted">We'll use your Reels to build your app.</p>
+   <div class="card" style="margin-top:16px">
+     <div class="chk"><span class="ic" style="background:#22332f">🎬</span>We import your Reels, profile photo and bio</div>
+     <div class="chk"><span class="ic" style="background:#22332f">🔒</span>You log in on Instagram's own screen. We never see your password</div>
+     <div class="chk"><span class="ic" style="background:#22332f">✅</span>Works with Creator and Business accounts. Switching is free and takes a minute</div>
+   </div>
+   <div class="card" style="background:#0f1c19;border:1px dashed #2e4a43">
+     <p class="small">For this demo, type the name and handle to use:</p>
+     <input class="field" placeholder="Your name, e.g. Joe" value="${CREATOR.name}" oninput="nameQ(this.value)">
+     <input class="field" placeholder="@yourhandle" value="${CREATOR.handle}" oninput="handleQ(this.value)">
+   </div>
+   <button class="btn" style="background:linear-gradient(90deg,#f58529,#dd2a7b,#8134af)" onclick="go({view:'c_ig'})">Connect Instagram</button>`,
+
+ c_ig:()=>`<div style="background:#fff;color:#111;border-radius:22px;padding:26px 20px;margin-top:20px">
+   <p style="text-align:center;font-family:Georgia,serif;font-size:30px;font-style:italic;margin-bottom:18px">Instagram</p>
+   <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px">${LOGO(44).replace('margin:0 auto','margin:0')}<span style="font-size:22px;color:#999">⇄</span><div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#f58529,#dd2a7b);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">${CREATOR.initial}</div></div>
+   <p style="text-align:center;font-weight:700;font-size:16px">FitLaunch would like to access your account</p>
+   <p style="text-align:center;font-size:13px;color:#666;margin:6px 0 16px">Logged in as ${CREATOR.handle}</p>
+   <div style="border-top:1px solid #eee;border-bottom:1px solid #eee;padding:8px 0;font-size:14px">
+     <p style="padding:8px 0">👤 Your profile info: name, photo, bio</p>
+     <p style="padding:8px 0">🎞️ Your photos and videos</p>
+   </div>
+   <button style="width:100%;background:#0095f6;color:#fff;border:none;border-radius:10px;padding:13px;font-weight:700;font-size:15px;margin-top:18px;cursor:pointer" onclick="startBuild()">Allow</button>
+   <button style="width:100%;background:none;color:#0095f6;border:none;padding:12px;font-weight:600;font-size:14px;cursor:pointer" onclick="go({view:'c_connect'})">Cancel</button>
+   </div><p class="small center" style="margin-top:12px">This is Instagram's own permission screen.</p>`,
+
+ c_build:()=>`${stepHead(2,"Building your app")}
+   <p class="muted">Our AI is watching your videos. This takes a few minutes for real accounts.</p>
+   <div class="progress" style="margin:18px 0"><div style="width:${Math.min(100,S.build/5*100)}%"></div></div>
+   <div class="card">${BUILD.map((b,i)=>`<div class="chk"><span class="ic" style="background:${i<S.build?'#1f5a3d':'#22332f'}">${i<S.build?'✓':(i===S.build?'<span class="spin"></span>':'')}</span><div><div style="${i>S.build?'color:#8fa39b':''}">${b[0]}</div>${i<S.build?`<div class="small">${b[1]}</div>`:''}</div></div>`).join("")}</div>`,
+
+ c_review:()=>`${stepHead(3,"Here's what we built")}
+   <p class="muted">Check your plans. Turn off anything you don't want, or tap a plan to fix exercises.</p>
+   <div style="display:flex;gap:8px;margin:14px 0"><span class="pill">4 plans</span><span class="pill">64 exercise videos</span><span class="pill">31 skipped</span></div>
+   ${PROGRAMS.map((p,i)=>`<div class="card row" style="opacity:${S.approved[i]?1:.45}">
+      <div style="flex:1;cursor:pointer" onclick="go({view:'c_plan',plan:${i}})"><h3>${p.name}</h3><p class="small">${p.weeks} weeks · ${p.days}×/week · ${PLANX[i].length} exercises · <u>Review</u></p></div>
+      <button class="pill ${S.approved[i]?'on':''}" onclick="S.approved[${i}]=!S.approved[${i}];render()">${S.approved[i]?'✓ In app':'Off'}</button></div>`).join("")}
+   <div class="warn">⚠️ <b>3 videos couldn't be imported</b> because downloads are turned off on those Reels. <u style="cursor:pointer">Upload the originals</u></div>
+   <div class="ok">🎵 <b>Music removed from 12 videos</b> for copyright reasons. Your voice is kept.</div>
+   <button class="btn" onclick="go({view:'c_brand'})">Looks good, continue</button>`,
+
+ c_plan:()=>{ const p=PROGRAMS[S.plan], xs=PLANX[S.plan];
+   return `<button class="back" onclick="go({view:'c_review'})">← All plans</button>
+   <label class="lbl">Plan name</label><input class="field" value="${p.name}" oninput="PROGRAMS[${S.plan}].name=this.value">
+   <p class="small" style="margin:14px 0 8px">Tap ✕ to remove an exercise. Check the ones the AI wasn't sure about.</p>
+   ${xs.map((x,j)=>{ const k=S.plan+'-'+j, rm=S.removed[k];
+     return `<div class="card row" style="padding:10px;opacity:${rm?.4:1}">
+       <div class="thumb" style="width:56px;height:70px;font-size:18px">▶</div>
+       <div style="flex:1"><h3 style="font-size:15px;${rm?'text-decoration:line-through':''}">${x[0]}</h3><p class="small">${x[1]}</p>
+       <p class="tagai ${x[2]<75?'low':''}">${x[2]<75?'⚠️ AI not sure about this one. Check it':'AI matched · '+x[2]+'% sure'}</p></div>
+       <button class="pill" onclick="S.removed['${k}']=!S.removed['${k}'];render()">${rm?'Undo':'✕'}</button></div>`}).join("")}
+   <button class="btn" onclick="go({view:'c_review'})">Save plan</button>`; },
+
+ c_brand:()=>`${stepHead(4,"Make it yours")}
+   <div class="row" style="margin:14px 0"><div class="avatar" style="width:64px;height:64px;font-size:24px">${CREATOR.initial}</div>
+     <div><h3>${CREATOR.name}</h3><p class="small">Photo imported from Instagram</p></div></div>
+   <label class="lbl">App name</label><input class="field" value="Train with ${CREATOR.name}" >
+   <label class="lbl">Bio</label><textarea class="field" rows="3" oninput="S.bio=this.value">${S.bio||'Home-gym strength programs built from my videos. Kettlebells, bands and a pull-up bar are all you need.'}</textarea>
+   <label class="lbl">Colour</label>
+   <div style="display:flex;gap:10px;margin-top:8px">${["#e0362a","#ff7a3d","#3b82f6","#22c55e","#a855f7"].map(c=>`<div class="sw ${S.accent===c?'on':''}" style="background:${c}" onclick="setAccent('${c}')"></div>`).join("")}</div>
+   <label class="lbl">Monthly price</label>
+   <div style="display:flex;gap:8px;margin-top:8px">${["$9.99","$14.99","$19.99"].map(p=>`<button class="pill ${S.price===p?'on':''}" style="flex:1;padding:12px" onclick="go({price:'${p}'})">${p}</button>`).join("")}</div>
+   <p class="small" style="margin-top:8px">Includes a 7-day free trial for new followers.</p>
+   <div class="ok" style="margin-top:14px">💳 <b>No payment setup needed now.</b> We collect subscriptions for you and send you your share every month. You'll add payout details when you make your first sale.</div>
+   <button class="btn" onclick="go({view:'c_live',copied:false})">Go live</button>`,
+
+ c_live:()=>`<div style="text-align:center;padding-top:10px"><div style="font-size:54px">🎉</div>${stepHead(5,"Your app is live!")}
+   <p class="muted">Share this link with your followers.</p></div>
+   <div class="card row" style="margin-top:16px"><div style="flex:1;font-weight:700;font-size:15px;word-break:break-all">fitlaunch.app/${slug()}</div>
+     <button class="pill on" onclick="copyLink()">${S.copied?'Copied!':'Copy'}</button></div>
+   <div class="card"><h3 style="margin-bottom:8px">Put it in your Instagram bio</h3>
+     <p class="small">1. Open Instagram and tap <b>Edit profile</b><br>2. Tap <b>Links</b>, then <b>Add external link</b><br>3. Paste your link and save</p></div>
+   <div class="card row"><div style="width:84px;height:150px;border-radius:12px;background:linear-gradient(160deg,${S.accent},#0b1513);display:flex;flex-direction:column;justify-content:space-between;padding:8px;flex-shrink:0">
+       <div style="font-size:10px;font-weight:800;line-height:1.2">Train with me in my new app</div><div style="background:#fff;color:#111;font-size:8px;font-weight:700;border-radius:6px;padding:4px;text-align:center">🔗 fitlaunch.app</div></div>
+     <div><h3>Announce it in your Story</h3><p class="small" style="margin:6px 0 10px">A ready-made Story with your link sticker, plus a QR code for in-person classes.</p><button class="pill on">Download Story</button></div></div>
+   <button class="btn" onclick="startFollower()">Open my app as a follower</button>
+   <button class="btn ghost" onclick="go({view:'c_dash'})">Go to my dashboard</button>`,
+
+ c_dash:()=>`<div class="row" style="margin-bottom:18px"><div class="avatar">${CREATOR.initial}</div><div><p class="small">Creator dashboard</p><h3>Hi ${CREATOR.name}</h3></div></div>
+   ${S.payoutSet?`<div class="ok">✓ <b>Payouts set up.</b> Your next payout of $108.92 arrives December 1.</div>`
+     :`<div class="card" style="border:2px solid ${S.accent}"><h3>🎉 You've earned your first $108.92!</h3><p class="small" style="margin:6px 0 12px">Add your payout details so we can send it to you.</p><button class="btn" style="margin-top:0" onclick="go({view:'c_payout'})">Add payout details</button></div>`}
+   <div class="row" style="gap:12px"><div class="card" style="flex:1"><p class="small">SUBSCRIBERS</p><div class="big" style="font-size:36px">9</div><p class="small">2 on free trial</p></div>
+     <div class="card" style="flex:1"><p class="small">MESSAGES</p><div class="big" style="font-size:36px">3</div><p class="small">unread</p></div></div>
+   <div class="card"><h3 style="margin-bottom:6px">This month</h3>
+     <div class="ex"><span>Subscriptions</span><span>$134.91</span></div>
+     <div class="ex"><span>Card fees</span><span>−$12.50</span></div>
+     <div class="ex"><span>FitLaunch share</span><span>−$13.49</span></div>
+     <div class="ex"><span><b>You get</b></span><span><b>$108.92</b></span></div></div>
+   <button class="btn ghost" onclick="go({view:'c_live'})">Share my link again</button>`,
+
+ c_payout:()=>`<button class="back" onclick="go({view:'c_dash'})">← Back</button>
+   <h1 style="margin-bottom:8px">Add payout details</h1>
+   <p class="muted">So we can send you your earnings every month.</p>
+   <div class="card" style="margin-top:14px"><p class="small">🔒 Secure form by Stripe. FitLaunch never sees your full bank details.</p>
+     <label class="lbl">Legal name</label><input class="field" value="${CREATOR.name}">
+     <label class="lbl">Date of birth</label><input class="field" placeholder="YYYY-MM-DD">
+     <label class="lbl">Bank account</label><input class="field" placeholder="Transit · Institution · Account number"></div>
+   <button class="btn" onclick="go({view:'c_dash',payoutSet:true})">Save and get paid</button>`,
+
+ f_signup:()=>`<div style="text-align:center;padding-top:20px"><div style="font-size:50px">💪</div>
+   <h1 style="margin:12px 0 8px">Save your progress</h1>
+   <p class="muted">Create your account to keep your streak and unlock all of ${CREATOR.name}'s programs.</p></div>
+   <div style="margin-top:28px">
+     <button class="btn" onclick="go({account:true,view:'paywall'})">Continue with Apple</button>
+     <button class="btn ghost" onclick="go({account:true,view:'paywall'})">Continue with Google</button>
+     <input class="field" style="margin-top:14px" placeholder="Or your email">
+     <button class="btn ghost" onclick="go({account:true,view:'paywall'})">Continue with email</button></div>
+   <p class="small center" style="margin-top:14px">No Instagram login needed.</p>`,
+
+ f_login:()=>`<button class="back" onclick="go({view:'welcome'})">← Back</button>
+   <h1 style="margin:10px 0 8px">Welcome back</h1><p class="muted">Log in to train with ${CREATOR.name}.</p>
+   <div style="margin-top:22px">
+     <button class="btn" onclick="go({account:true,subscribed:true,view:'app',tab:'today'})">Continue with Apple</button>
+     <button class="btn ghost" onclick="go({account:true,subscribed:true,view:'app',tab:'today'})">Continue with Google</button>
+     <input class="field" style="margin-top:14px" placeholder="Your email">
+     <button class="btn ghost" onclick="go({account:true,subscribed:true,view:'app',tab:'today'})">Email me a login link</button></div>`
+});
+
+// highlight the current mode above the phone
+const _renderBase=render;
+render=function(){ _renderBase();
+  const v=S.view, m=(v==="c_dash"||v==="c_payout")?"mD":(v.startsWith("c_")?"mC":"mF");
+  ["mC","mF","mD"].forEach(id=>document.getElementById(id).classList.toggle("on",id===m)); };
+
+render();
+
+// Analytics: which demo screens are opened. Never sends what people type.
+(function(){
+  const DEMO="flow"; let last="", personalized=false;
+  const _go=go;
+  go=function(p){ _go(p); const k=S.view==="app"?"tab:"+S.tab:S.view; if(k!==last){ last=k; posthog.capture("demo_screen",{demo:DEMO,screen:k}); } };
+  const _sn=setName;
+  setName=function(v){ _sn(v); if(!personalized && v.trim()){ personalized=true; posthog.capture("demo_personalized",{demo:DEMO}); } };
+})();
+</script>
+</body>
+</html>
