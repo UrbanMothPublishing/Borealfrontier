@@ -493,15 +493,15 @@ Object.assign(VIEWS,{
    <button class="btn ghost" onclick="go({view:'c_dash'})">Go to my dashboard</button>`,
 
  c_dash:()=>`<div class="row" style="margin-bottom:18px"><div class="avatar">${CREATOR.initial}</div><div><p class="small">Creator dashboard</p><h3>Hi ${CREATOR.name}</h3></div></div>
-   ${S.payoutSet?`<div class="ok">✓ <b>Payouts set up.</b> Your next payout of $108.92 arrives December 1.</div>`
-     :`<div class="card" style="border:2px solid ${S.accent}"><h3>🎉 You've earned your first $108.92!</h3><p class="small" style="margin:6px 0 12px">Add your payout details so we can send it to you.</p><button class="btn" style="margin-top:0" onclick="go({view:'c_payout'})">Add payout details</button></div>`}
+   ${S.payoutSet?`<div class="ok">✓ <b>Payouts set up.</b> Your next payout of $97.93 arrives December 1.</div>`
+     :`<div class="card" style="border:2px solid ${S.accent}"><h3>🎉 You've earned your first $97.93!</h3><p class="small" style="margin:6px 0 12px">Add your payout details so we can send it to you.</p><button class="btn" style="margin-top:0" onclick="go({view:'c_payout'})">Add payout details</button></div>`}
    <div class="row" style="gap:12px"><div class="card" style="flex:1"><p class="small">SUBSCRIBERS</p><div class="big" style="font-size:36px">9</div><p class="small">2 on free trial</p></div>
      <div class="card" style="flex:1"><p class="small">MESSAGES</p><div class="big" style="font-size:36px">3</div><p class="small">unread</p></div></div>
    <div class="card"><h3 style="margin-bottom:6px">This month</h3>
      <div class="ex"><span>Subscriptions</span><span>$134.91</span></div>
      <div class="ex"><span>Card fees</span><span>−$12.50</span></div>
-     <div class="ex"><span>FitLaunch share</span><span>−$13.49</span></div>
-     <div class="ex"><span><b>You get</b></span><span><b>$108.92</b></span></div></div>
+     <div class="ex"><span>FitLaunch share (20%)</span><span>−$24.48</span></div>
+     <div class="ex"><span><b>You get (80%)</b></span><span><b>$97.93</b></span></div></div>
    <button class="btn ghost" onclick="go({view:'c_live'})">Share my link again</button>`,
 
  c_payout:()=>`<button class="back" onclick="go({view:'c_dash'})">← Back</button>
