@@ -62,7 +62,7 @@ posthog.init("phc_nv2jjj4XT3zcxw9emkhMQZwCRZpPedfz2yPPwEqN8KZb",{api_host:"https
 </script>
 </head>
 <body>
-<p class="note" style="margin-bottom:6px"><a href="/" style="color:#1c1a17;font-weight:700;text-decoration:none">🍁 Boreal Frontier</a> · <a href="/#contact" style="color:#4a4640">Get your own app</a></p>
+<p class="note" style="margin-bottom:6px"><a href="/" style="color:#1c1a17;font-weight:700;text-decoration:none">🍁 Boreal Frontier</a> · <a href="/free-app/" style="color:#4a4640" onclick="posthog.capture('free_app_link_clicked',{from:'demo'})">Get your own app, free</a></p>
 <p class="note"><b>Concept: a subscription fitness app built from a creator's Instagram videos.</b> Type a creator name below to preview it. All workouts, messages and prices are made-up samples; the real app would be built from the creator's own Reels.</p>
 <div style="width:390px;max-width:100%;display:grid;gap:8px;margin-bottom:14px">
   <input id="nm" placeholder="Your name, e.g. Joe" oninput="setName(this.value)" style="padding:12px 16px;border-radius:12px;border:1px solid #c9c3ba;font-size:15px">
